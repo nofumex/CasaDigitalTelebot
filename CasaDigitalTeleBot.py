@@ -8,8 +8,13 @@ from telegram.ext import (
 from flask import Flask, request
 import threading
 
-TOKEN = "7895325617:AAEWaaycYgn75abmpL3QNqNoRsolbsssilM"
-MANAGER_CHAT_ID = 7727079839
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+MANAGER_CHAT_ID = int(os.getenv("MANAGER_CHAT_ID"))
 
 PROMO, GET_NAME, GET_CONTACT, SELECT_SERVICE, CUSTOM_SERVICE = range(5)
 
