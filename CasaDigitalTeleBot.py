@@ -1,5 +1,6 @@
 from telegram import (
-    Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+    Update, InlineKeyboardButton, InlineKeyboardMarkup,
+    ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 )
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
@@ -7,9 +8,9 @@ from telegram.ext import (
 )
 from flask import Flask, request
 import threading
-
 from dotenv import load_dotenv
 import os
+import requests
 
 load_dotenv()
 
@@ -39,7 +40,6 @@ def webhook():
         f"📝 О проекте: {message}"
     )
 
-    import requests
     requests.get(f"https://api.telegram.org/bot{TOKEN}/sendMessage", params={
         "chat_id": MANAGER_CHAT_ID,
         "text": telegram_text
@@ -125,7 +125,7 @@ async def handle_promo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if code == "WELCOME10":
         await update.message.reply_text("🎉 Промокод принят! Вы получили скидку 10%.")
         context.user_data["has_discount"] = True
-        await show_services(update, context)  # Показываем услуги сразу после промокода
+        await show_services(update, context)
     else:
         await update.message.reply_text(
             "❗ Такой промокод не найден.\n"
@@ -188,7 +188,8 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 def run_flask():
-    flask_app.run(port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    flask_app.run(host="0.0.0.0", port=port)
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
